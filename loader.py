@@ -8,6 +8,7 @@ i am  keeping loader seprate because it would be easier to add other extensions 
 
 import os
 from typing import Dict, Tuple
+from pypdf import PdfReader
 
 
 def load_txt_or_md(path: str) -> Tuple[str, Dict]:
@@ -18,7 +19,7 @@ def load_txt_or_md(path: str) -> Tuple[str, Dict]:
 
 
 def load_pdf(path: str) -> Tuple[str, Dict]:
-    from pypdf import PdfReader
+   
 
     reader = PdfReader(path)
     pages_text = []
