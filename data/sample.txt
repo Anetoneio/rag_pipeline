@@ -1,0 +1,62 @@
+Retrieval-Augmented Generation (RAG)
+
+Retrieval-Augmented Generation, or RAG, is a technique that combines
+information retrieval with text generation. Instead of relying only on
+what a language model memorized during training, RAG first searches an
+external knowledge source for relevant information, then feeds that
+information to the model as context before it generates an answer.
+
+Why RAG matters
+
+Large language models have two weaknesses that RAG directly addresses.
+First, their knowledge is frozen at training time, so they cannot
+answer questions about new or private documents without being
+retrained. Second, they can hallucinate: producing fluent but
+factually wrong answers when they are uncertain. By grounding the
+model's answer in retrieved text, RAG reduces hallucination and lets
+the system answer questions about documents it has never seen during
+training, such as a company's internal PDFs.
+
+The stages of a RAG pipeline
+
+A RAG pipeline typically has six stages. Ingestion loads raw documents
+from disk, such as PDFs, text files, or Markdown files. Chunking splits
+each document into smaller, overlapping pieces so that each piece is
+short enough to embed and specific enough to be individually relevant.
+Embedding converts each chunk into a numerical vector that captures its
+meaning. Indexing stores those vectors in a vector store that supports
+fast similarity search. Retrieval takes a user's question, embeds it
+the same way, and finds the chunks whose vectors are closest to the
+question's vector. Generation passes the retrieved chunks along with
+the original question to a language model, which produces a final
+answer grounded in that context.
+
+Chunk size and overlap
+
+Choosing a chunk size is a trade-off. Very small chunks are precise but
+may lack surrounding context, which can make retrieved text hard for
+the model to interpret. Very large chunks carry more context but dilute
+relevance, since a chunk that only partially matches the question may
+still be retrieved because part of it scores well. A moderate chunk
+size, combined with a modest overlap between consecutive chunks,
+usually gives a good balance: overlap ensures that a sentence spanning
+a chunk boundary is not split away from its context in every chunk.
+
+Vector similarity search
+
+Once chunks are embedded, retrieval reduces to a nearest neighbor
+search: given a query vector, find the stored vectors closest to it
+under some distance metric, most commonly cosine similarity. Vector
+stores such as FAISS, Chroma, and many managed vector databases exist
+specifically to make this search fast, even across millions of vectors.
+
+Limitations of RAG
+
+RAG is not a complete solution to hallucination. If the retriever
+fails to find the relevant chunk, the model may still answer
+incorrectly, sometimes confidently. RAG systems are also sensitive to
+how documents are chunked: a poor chunking strategy can split
+important information across chunks in a way that makes it hard to
+retrieve as a coherent unit. For these reasons, evaluating and tuning
+the retrieval step is often just as important as choosing a good
+language model for generation.
