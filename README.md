@@ -20,7 +20,7 @@ grounded LLM generation.
  Clone the repo
 ```bash
 git clone https://github.com/Anetoneio/rag_pipeline.git
-cd yogesh_26bce11686
+cd rag_pipeline
 ```
 
  Install dependencies
